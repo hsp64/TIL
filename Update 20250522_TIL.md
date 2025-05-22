@@ -1,1 +1,274 @@
+# CSS Grid 레이아웃
+
+- CSS Grid 레이아웃은 2차원 레이아웃 시스템으로 행과 열을 기반으로 웹 페이지의 레이아웃을 구성할 수 있는 강력한 도구이다.
+- Flexbox가 주로 1차원 레이아웃(가로 또는 세로 방향)을 처리하는 데 비해 Grid는 2차원 레이아웃을 자연스럽게 처리할 수 있어 복잡한 웹페이지 구조를 간단하게 설계할 수 있다.
+
+
+## Grid 컨테이너와 아이템의 개념
+
+### 1. Grid 컨테이너 (Grid Container)
+
+- Grid 레이아웃이 적용된 요소이다. display: grid; 를 설정하면 해당 요소가 Grid 컨테이너가 되고 그 안의 자식 요소들이 자동으로 Grid 아이템이 된다.
+- 주로 레이아웃을 구성하는 부모 요소로 사용되며 행과 열을 정의하는 속성을 통해 자식 요소들을 배치할 수 있다.
+```CSS
+.grid-container {
+    display: grid;
+    background-color: lightgray;
+    padding: 10px;
+}
+```
+
+### 2.Grid 아이템 (Grid Items)
+
+- Grid 컨테이너의 자식 요소들이다. 행과 열의 격자(grid)에 따라 배치되며 위치와 크기를 조정할 수 있다.
+```html
+<div class="grid-container">
+    <div class="grid-item">아이템 1</div>
+    <div class="grid-item">아이템 2</div>
+    <div class="grid-item">아이템 3</div>
+    <div class="grid-item">아이템 4</div>
+</div>
+```
+
+
+## 주요 Grid 속성
+
+### 1. grid-template-columns 와 grid-template-rows
+
+- grid 컨테이너의 열과 행의 크기를 정의한다. 각 속성은 열고 행의 크기를 지정하는 값의 목록을 가질 수 있으며 이 값을 기반으로 컨테이너 내에서 아이템들이 배치된다.
+```css
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr; /* 3개의 열을 정의, 가운데 열은 나머지 두 열의 2배 크기 */
+    grid-template-rows: 100px 200px; /* 2개의 행을 정의 */
+}
+```
+- 1fr: 컨테이너 내의 가용 공간을 비율로 나눈 값이다. fr(fractional unit)은 Grid 레이아웃에서 사용할 수 있는 새로운 단위로 전체 가용 공간을 일정 비율로 나누어 사용하는데 유용하다.
+- 고정값: px, %, em 등 고정된 크기를 사용할 수도 있다.
+
+### 2. Grid-gap
+
+-  Grid 아이템들 사이의 간격을 정의한다. 이 속성을 사요앟여 행,열 간격 (row,column-gap)을 설정할 수 있다.
+- row-gap : 행 간의 간격을 지정한다.
+- column-gap : 열 간의 간격을 지정한다.
+- grid-gap : 단축 속성으로 행과 열 간의 간격을 동시에 지정할수있다.
+```css
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-rows: 100px 100px;
+    grid-gap: 10px; /* 아이템들 사이의 간격을 10px로 설정 */
+}
+```
+
+### 3. grid-column 과 grid-row
+
+- grid 아이템이 컨테이너 내에서 어느 열과 행에 위치할지를 정의한다. 이 속성을 사용하면 특정 아이템이 여러 열 또는 행을 차지하도록 설정할 수 있다.
+- grid-column: 1 / 3; 1열에서 시작해서 3열까지 차지하도록 설정.
+- grid-row: 1 / 3; 1행에서 시작해서 3행까지 설정.
+```css
+.grid-item:nth-child(1) {
+    grid-column: 1 / 3; /* 첫 번째 아이템이 1열부터 3열까지 차지 */
+}
+
+.grid-item:nth-child(2) {
+    grid-row: 1 / 3; /* 두 번째 아이템이 1행부터 3행까지 차지 */
+}
+```
+
+### 4. grid-area
+
+- 특정 그리드 영역에 배치하는데 사용된다.
+- grid-template-areas와 함께 사용하면 이름을 기반으로 그리드 레이아웃을 더 직관적으로 관리할 수 있따.
+```css
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 100px 100px;
+    grid-template-areas:
+        "header header"
+        "content sidebar";
+}
+
+.grid-header {
+    grid-area: header;
+}
+
+.grid-content {
+    grid-area: content;
+}
+
+.grid-sidebar {
+    grid-area: sidebar;
+}
+```
+```html
+<div class="grid-container">
+    <div class="grid-header">헤더</div>
+    <div class="grid-content">콘텐츠</div>
+    <div class="grid-sidebar">사이드바</div>
+</div>
+```
+```css
+/* 위 예제는 2*2지만 */
+/* 3*3 를 만들면 area 에 9개의 문자가 들어가야된다. */
+    "a b c"
+    "d e f"
+    "g h i";
+}
+```
+
+
+# 포지셔닝과 레이어링
+
+- CSS포지셔닝(Positioning)은 웹 페이지에서 요소의 위치를 제어하는 중요한 방법이다. 포지셔닝을 이해하면 요소를 원하는 위치에 배치하고 다른 요소와 겹치거나 고정된 위치에 유지할 수 있다.
+- z-index 를 사용해 요소들의 쌓임 순서(레이어링)를 관리할 수 있다.
+
+## 포지셔닝 개념
+
+### 1. 정적 포지셔닝 (Static Positioning)
+
+- 모든 요소는 기본적으로 정적으로 배치되며 문서의 일반적인 흐름에 따라 위치가 정해진다.
+- position: static 이 기본값으로 적용되며 추가적인 위치 지정이 없다.
+```css
+.static-element {
+    position: static; /* 기본값 */
+}
+```
+```html
+<div class="static-element">정적 포지셔닝</div>
+```
+
+### 2.상대적 포지셔닝 (Relative Positioning)
+
+- 상대적 포지셔닝은 요소를 자신의 원래 위치를 기준으로 이동시킨다. 요소의 기본 위치가 기준점이 되며 다른요소에는 영향을 미치지 않고 이동한다. (혼자 따로 ㄱㄱ)
+- position: relative; 로 설정하고 top, right, bottom, left 속성을 사용해 위치를 조정할 수 있다.
+```css
+.relative-element {
+    position: relative;
+    top: 20px; /* 요소를 아래로 20px 이동 */
+    left: 10px; /* 요소를 오른쪽으로 10px 이동 */
+}
+```
+```html
+<div class="relative-element">상대적 포지셔닝</div>
+```
+
+### 3. 절대적 포지셔닝 (Absolute Positioning)
+
+- 자리가 사라진다. 형제 요소랑 같이 배치되어 있었다면 그 형제가 그 자리로 이동하고 자리는 조상 position: ? 값에 기준으로 이동한다. 없다면 전체화면 뷰포트가 기준이 된다.
+- 요소를 가장 가까운 조상 요소 중 position이 relative, absolute, fixed, 또는 sticky로 설정된 요소를 기준으로 이동시킨다.
+- 조상 요소에 position 이 없다면 뷰포트 기준으로 배치된다. (
+- position: absolute; 로 설정하고 top, right bottom, left 속성을 사용해 위치를 조정한다. 
+```css
+.fixed-element {
+    position: fixed;
+    bottom: 10px; /* 뷰포트 기준으로 아래에서 10px */
+    right: 10px; /* 뷰포트 기준으로 오른쪽에서 10px */
+    background-color: lightcoral;
+    padding: 10px;
+}
+```
+```html
+<div class="fixed-element">고정 포지셔닝</div>
+```
+
+### 4. 고정 포지셔닝 (Fixed Positioning)
+
+- 고정 포지셔닝은 요소를 뷰포트를 기준으로 배치되며 스크롤 시에도 항상 고정된 위치에 유지된다. 주로 네비게이션 바나 고정된 버튼 등에 사용된다.
+- position: fixed; 로 설정하고 top,right,bottom,left 로 위치 조정한다.
+```css
+.fixed-element {
+    position: fixed;
+    bottom: 10px; /* 뷰포트 기준으로 아래에서 10px */
+    right: 10px; /* 뷰포트 기준으로 오른쪽에서 10px */
+    background-color: lightcoral;
+    padding: 10px;
+}
+```
+```html
+<div class="fixed-element">고정 포지셔닝</div>
+```
+
+### 5. 스티키 포지셔닝 (Sticky Positioning)
+
+- 스크롤에 따라 움직이다가 지저오딘 임계점에 도달하면 고정되는 동작을 한다. 기준은 스크롤 위치에 따라 다르다.
+- position: sticky; 로 설정 마찬가지로 t r b l 속성을 사용해 임계점을 지정할 수 있다.
+```css
+.sticky-element {
+    position: sticky;
+    top: 0; /* 요소가 상단에 도달하면 고정 */
+    background-color: lightgreen;
+    padding: 10px;
+}
+```
+```html
+<div class="sticky-element">스티키 포지셔닝</div>
+<p>스크롤해보세요!</p>
+<div style="height: 2000px;"></div>
+```
+
+### 6. 포지셔닝 속성 비교
+```css
+<div class="container">
+    <div class="static-element">Static</div>
+    <div class="relative-element">Relative</div>
+    <div class="absolute-element">Absolute</div>
+    <div class="fixed-element">Fixed</div>
+    <div class="sticky-element">Sticky</div>
+</div>
+```
+- Static: 문서의 기본 흐름에 따라 배치된다.
+- Relative: 자신의 원래 위치를 기준으로 이동한다.
+- Absolute: 가장 가까운 조상 요소를 기준으로 배치된다.
+- Fixed: 뷰포트를 기준으로 고정된다.
+- Sticky: 스크롤에 따라 움직이다가 고정된다.
+
+
+## z-index 와 레이어링 개념
+
+### 1. z-index 개념
+
+- z-index 속성은 요소의 쌓임 순서(레이어 순서)를 제어한다. z-index 값이 높은 요소가 더 위에 쌓인다.
+- z-index는 포지셔닝이 설정된 요소 (relative, absolute, fixed, sticky)중 하나로 설정된 요소에만 적용된다.
+```css
+.layered-container {
+    position: relative;
+    width: 300px;
+    height: 200px;
+    background-color: lightgray;
+}
+
+.layer1 {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 100px;
+    height: 100px;
+    background-color: skyblue;
+    z-index: 1;
+}
+
+.layer2 {
+    position: absolute;
+    top: 40px;
+    left: 40px;
+    width: 100px;
+    height: 100px;
+    background-color: lightcoral;
+    z-index: 2;
+}
+```html
+<div class="layered-container">
+    <div class="layer1">Layer 1</div>
+    <div class="layer2">Layer 2</div>
+</div>
+```
+
+
+### 2. 레이어링 개념
+
+- 레이어링(layering)은 페이지 상에서 요소들이 쌓이는 순서를 의미한다. 기본적으로 요소들은 HTML 문서에 나오는 순서대(밑으로가면 맨앞)로 쌓이며 z-index를 사용해 이 순서를 변경할 수 있다.
+- 레이어링은 주로 팝업 드롭다운 메뉴 모달 창 등에서 중요한 역할을 한다. z-index 값을 설정함으로써 특정 요소가 다른 요소 위에 표시되도록 할 수 있다.
+
 
